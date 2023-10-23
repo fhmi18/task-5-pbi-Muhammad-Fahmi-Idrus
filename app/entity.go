@@ -10,6 +10,6 @@ type User struct {
 	Email     string
 	Password  string
 	Photo     string
-	CreateAt  time.Time
+	CreatedAt time.Time
 	UpdatedAt time.Time
 }
