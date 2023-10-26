@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"pbi-ringin/app"
-	"pbi-ringin/handler"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -33,7 +32,7 @@ func main() {
 	// fmt.Println(user.Email)
 	// fmt.Println(user.Username)
 
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := app.NewUserHandler(userService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
