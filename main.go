@@ -41,5 +41,4 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 
 	router.Run()
-
 }
