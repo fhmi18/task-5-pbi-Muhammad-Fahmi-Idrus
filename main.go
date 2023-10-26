@@ -20,12 +20,26 @@ func main() {
 	userRepository := app.NewRepository(db)
 	userService := app.NewService(userRepository)
 
+	// input := app.LoginInput{
+	// 	Email:    "roymar@gmail.com",
+	// 	Password: "password",
+	// }
+	// user, err := userService.Login(input)
+	// if err != nil {
+	// 	fmt.Println("Terjadi kesalahan pada Email atau Password")
+	// 	fmt.Println(err.Error())
+	// }
+
+	// fmt.Println(user.Email)
+	// fmt.Println(user.Username)
+
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.RegisterUser)
+	api.POST("/sessions", userHandler.Login)
 
 	router.Run()
 
