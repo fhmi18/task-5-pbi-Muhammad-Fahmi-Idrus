@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"pbi-ringin/app"
+	"pbi-ringin/helpers"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -18,8 +19,9 @@ func main() {
 
 	userRepository := app.NewRepository(db)
 	userService := app.NewService(userRepository)
+	authService := helpers.NewService()
 
-	userHandler := app.NewUserHandler(userService)
+	userHandler := app.NewUserHandler(userService, authService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")

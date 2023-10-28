@@ -10,10 +10,11 @@ import (
 
 type userHandler struct {
 	userService Service
+	authService helpers.Service
 }
 
-func NewUserHandler(userService Service) *userHandler {
-	return &userHandler{userService}
+func NewUserHandler(userService Service, authService helpers.Service) *userHandler {
+	return &userHandler{userService, authService}
 }
 
 func (h *userHandler) RegisterUser(c *gin.Context) {
@@ -38,7 +39,14 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	formatter := FormatUser(newUser, "tokentoken")
+	token, err := h.authService.GenerateToken(newUser.ID)
+	if err != nil {
+		response := helpers.APIResponse("Register account failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	formatter := FormatUser(newUser, token)
 
 	response := helpers.APIResponse("Account has been register", http.StatusOK, "success", formatter)
 
@@ -65,8 +73,14 @@ func (h *userHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
+	token, err := h.authService.GenerateToken(loggedinUser.ID)
+	if err != nil {
+		response := helpers.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
-	formatter := FormatUser(loggedinUser, "tokentoken")
+	formatter := FormatUser(loggedinUser, token)
 
 	response := helpers.APIResponse("Successfuly loggedin", http.StatusOK, "success", formatter)
 
