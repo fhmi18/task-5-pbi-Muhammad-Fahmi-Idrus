@@ -1,9 +1,14 @@
 package helpers
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"errors"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type Service interface {
 	GenerateToken(userID int) (string, error)
+	ValidateToken(token string) (*jwt.Token, error)
 }
 
 type jwtService struct {
@@ -11,7 +16,7 @@ type jwtService struct {
 
 var SECRET_KEY = []byte("ringin_key")
 
-func NewService() *jwtService{
+func NewService() *jwtService {
 	return &jwtService{}
 }
 
@@ -27,4 +32,20 @@ func (s *jwtService) GenerateToken(userID int) (string, error) {
 	}
 
 	return signedToken, nil
+}
+
+func (s *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
+	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+
+		if !ok {
+			return nil, errors.New("Invalid token")
+		}
+		return []byte(SECRET_KEY), nil
+	})
+
+	if err != nil {
+		return token, err
+	}
+	return token, nil
 }
