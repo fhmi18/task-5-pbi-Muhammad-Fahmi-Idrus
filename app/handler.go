@@ -133,7 +133,7 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	userID := 1
+	userID := 12
 
 	// path := "images/" + file.Filename
 	path := fmt.Sprintf("images/%d-%s", userID, file.Filename)
